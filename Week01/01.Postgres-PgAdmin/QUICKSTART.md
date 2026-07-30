@@ -2,6 +2,10 @@
 
 Follow these steps to get your PostgreSQL database and pgAdmin interface up and running.
 
+## Screenshots
+
+![pgadmin query](images/pgadmin-query.png)
+
 ## 1. Start the Environment
 
 Make sure you have Docker and Docker Compose installed. Open your terminal, navigate to this directory (`Week01/01.Postgres-PgAdmin`), and run:
@@ -34,6 +38,12 @@ Once logged into pgAdmin:
 4. Click **Save**.
 
 You should now see the `itec617` database listed on the left panel. Navigate to **Schemas > public > Tables** to find your `Students` table. You can right-click it and select **View/Edit Data > All Rows** to see the 100 seeded records.
+
+5. (Optional) If you want to run SQL queries, click on the **Query Tool** button in the top menu. You can write and execute SQL commands against your database here.
+
+```sql
+select * from Students;
+```
 
 ## 4. Stop the Environment
 
