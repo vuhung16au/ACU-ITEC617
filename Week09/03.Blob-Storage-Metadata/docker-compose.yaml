@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite-blob-W09-03
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - azurite_data:/workspace
+    command: azurite --workspace /workspace --debug /workspace/debug.log
+    networks:
+      - db-network
+
+  init-data:
+    image: python:3.9-slim
+    container_name: init-azurite-blob-W09-03
+    depends_on:
+      - azurite
+    volumes:
+      - ./init-scripts:/init-scripts
+    working_dir: /init-scripts
+    # Wait for azurite and then run the Python seed script
+    command: >
+      bash -c "pip install azure-storage-blob && python init.py"
+    networks:
+      - db-network
+
+volumes:
+  azurite_data:
+
+networks:
+  db-network:
+    driver: bridge

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb-W09-04-cosmos-challenge
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: itec617
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./init-scripts/init-mongo.js:/docker-entrypoint-initdb.d/01-init.js
+    networks:
+      - db-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express-W09-04
+    ports:
+      - "5050:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: user
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://user:password@mongodb:27017/
+      ME_CONFIG_BASICAUTH: 'false'
+    depends_on:
+      - mongodb
+    networks:
+      - db-network
+
+  gremlin-server:
+    image: tinkerpop/gremlin-server:3.7.1
+    container_name: gremlin-server-W09-04
+    ports:
+      - "8182:8182"
+    networks:
+      - db-network
+
+  init-gremlin:
+    image: python:3.9-slim
+    container_name: init-gremlin-W09-04
+    depends_on:
+      - gremlin-server
+    volumes:
+      - ./init-scripts:/init-scripts
+    working_dir: /init-scripts
+    command: >
+      bash -c "pip install gremlinpython && sleep 15 && python init-gremlin.py"
+    networks:
+      - db-network
+
+networks:
+  db-network:
+    driver: bridge
