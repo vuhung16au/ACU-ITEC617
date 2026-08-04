@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:18.4
     # Naming convention: postgres-db-<WeekXX>-<topic number>-<topic name>
-    container_name: postgres-db-W01-02-filesystem-vs-database
+    container_name: postgres-db-W02-01-business-rule-to-sql
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data_2:/var/lib/postgresql
+      - postgres_data:/var/lib/postgresql
       - ./init-scripts:/docker-entrypoint-initdb.d
     networks:
       - db-network
@@ -20,7 +20,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4:9.17
     # Naming convention: pgadmin-web-<WeekXX>-<topic number>-<topic name>
-    container_name: pgadmin-web-W01-02-filesystem-vs-database
+    container_name: pgadmin-web-W02-01-business-rule-to-sql
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root
@@ -39,7 +39,7 @@ services:
       - db-network
 
 volumes:
-  postgres_data_2:
+  postgres_data:
 
 networks:
   db-network:
