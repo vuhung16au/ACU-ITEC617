@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "ITEC617 - Week 10 DB 04",
+      "Group": "Servers",
+      "Host": "postgres-db-Week10-04-PowerBIDashboard",
+      "Port": 5432,
+      "MaintenanceDB": "itec617",
+      "Username": "user",
+      "SSLMode": "prefer"
+    }
+  }
+}

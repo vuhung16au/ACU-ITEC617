@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:18.4
+    # Naming convention: postgres-db-<WeekXX>-<topic number>-<topic name>
+    container_name: postgres-db-Week10-04-PowerBIDashboard
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: itec617
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - db-network
+
+  pgadmin:
+    image: dpage/pgadmin4:9.17
+    # Naming convention: pgadmin-web-<WeekXX>-<topic number>-<topic name>
+    container_name: pgadmin-web-Week10-04-PowerBIDashboard
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      # Bypasses the email/password login screen entirely (desktop/single-user mode)
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      # Disables the Master Password popup
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      # Auto-loads the Postgres connection so students do not "Add New Server"
+      - ./servers.json:/pgadmin4/servers.json
+    depends_on:
+      - postgres
+    networks:
+      - db-network
+
+volumes:
+  postgres_data:
+
+networks:
+  db-network:
+    driver: bridge

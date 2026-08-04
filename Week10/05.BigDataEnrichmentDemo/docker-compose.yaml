@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:18.4
+    # Naming convention: postgres-db-<WeekXX>-<topic number>-<topic name>
+    container_name: postgres-db-Week10-05-BigData
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: itec617
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - db-network
+
+  spark-jupyter:
+    image: jupyter/all-spark-notebook:python-3.11.4
+    container_name: spark-jupyter-W10-05
+    ports:
+      - "8888:8888" # Jupyter Lab UI
+      - "4040:4040" # Spark Web UI
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=password
+    volumes:
+      - ./workspace:/home/jovyan/work
+    depends_on:
+      - postgres
+    networks:
+      - db-network
+
+volumes:
+  postgres_data:
+
+networks:
+  db-network:
+    driver: bridge
