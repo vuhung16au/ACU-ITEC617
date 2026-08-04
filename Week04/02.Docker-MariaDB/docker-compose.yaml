@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb-db-W04-02-docker-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: SecureRootPass123!
+      MYSQL_DATABASE: companydb
+      MYSQL_USER: dbadmin
+      MYSQL_PASSWORD: AdminPass456!
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - db-network
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer-web-W04-02-docker-mariadb
+    ports:
+      - "5050:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    depends_on:
+      - mariadb
+    networks:
+      - db-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  db-network:
+    driver: bridge
