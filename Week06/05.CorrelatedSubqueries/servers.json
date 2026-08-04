@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "ITEC617 - Week 06 DB 5",
+      "Group": "Servers",
+      "Host": "postgres-db-Week06-05-CorrelatedSubqueries",
+      "Port": 5432,
+      "MaintenanceDB": "itec617",
+      "Username": "user",
+      "SSLMode": "prefer"
+    }
+  }
+}
