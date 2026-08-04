@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "ITEC617 - Week 07 Topic 03 DB",
+      "Group": "Servers",
+      "Host": "postgres-db-W07-03-student-enrollment",
+      "Port": 5432,
+      "MaintenanceDB": "itec617",
+      "Username": "user",
+      "SSLMode": "prefer"
+    }
+  }
+}
