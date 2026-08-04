@@ -1,0 +1,14 @@
+{
+  "name": "sql-injection-lab",
+  "version": "1.0.0",
+  "description": "Vulnerable web app for SQL Injection lab",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.11.5",
+    "body-parser": "^1.20.2"
+  }
+}

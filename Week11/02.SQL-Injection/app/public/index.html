@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection Lab</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f9; }
+        .container { display: flex; gap: 40px; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex: 1; }
+        h2 { color: #333; }
+        .vulnerable { border-top: 4px solid red; }
+        .secure { border-top: 4px solid green; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .hint { font-size: 0.9em; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>ACU-ITEC617 SQL Injection Lab</h1>
+    <p>This lab demonstrates the dangers of building SQL queries using string concatenation and how to prevent it.</p>
+    
+    <div class="container">
+        <!-- VULNERABLE LOGIN -->
+        <div class="box vulnerable">
+            <h2>Vulnerable Login</h2>
+            <p>This endpoint constructs the SQL query unsafely:</p>
+            <code>SELECT * FROM app.users WHERE username = '$username' AND password = '$password'</code>
+            
+            <form action="/login-vulnerable" method="POST">
+                <label for="username_vuln">Username:</label>
+                <input type="text" id="username_vuln" name="username" required>
+                
+                <label for="password_vuln">Password:</label>
+                <input type="password" id="password_vuln" name="password" required>
+                
+                <button type="submit">Login</button>
+            </form>
+            <div class="hint">
+                <strong>Try this:</strong><br>
+                Username: <code>' OR '1'='1</code><br>
+                Password: <code>' OR '1'='1</code>
+            </div>
+        </div>
+
+        <!-- SECURE LOGIN -->
+        <div class="box secure">
+            <h2>Secure Login</h2>
+            <p>This endpoint uses parameterized queries to safely pass data:</p>
+            <code>SELECT * FROM app.users WHERE username = $1 AND password = $2</code>
+            
+            <form action="/login-secure" method="POST">
+                <label for="username_sec">Username:</label>
+                <input type="text" id="username_sec" name="username" required>
+                
+                <label for="password_sec">Password:</label>
+                <input type="password" id="password_sec" name="password" required>
+                
+                <button type="submit">Login</button>
+            </form>
+            <div class="hint">
+                <strong>Try the same injection here.</strong> It will be safely interpreted as a literal string.
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 40px;">
+        <div class="box vulnerable" style="border-top: 4px solid orange;">
+            <h2>User Search (Vulnerable to UNION & Stacked Queries)</h2>
+            <p>Search for a user by their username.</p>
+            <code>SELECT id, username, role FROM app.users WHERE username = '$username'</code>
+            <form action="/search-user" method="POST">
+                <label for="search_user">Username:</label>
+                <input type="text" id="search_user" name="username" required>
+                <button type="submit">Search</button>
+            </form>
+            <div class="hint">
+                <strong>Try UNION Injection (extract secret data):</strong><br>
+                <code>' UNION SELECT id, secret_name, secret_value FROM app.secret_data --</code>
+                <br><br>
+                <strong>Try Stacked Query (destructive):</strong><br>
+                <code>'; DROP TABLE app.secret_data; --</code>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
