@@ -14,6 +14,11 @@ When the user invokes this skill, ensure you have the following information:
 
 If the user does not provide both, ask them for the missing information before proceeding.
 
+## Database Selection Guidelines
+When scaffolding the lab environment based on the user's prompt, adhere to the following technology mappings:
+* **NoSQL / Azure Cosmos DB:** If the prompt mentions NoSQL databases, such as Microsoft Azure Cosmos DB, use **MongoDB + Docker** for the hands-on lab.
+* **Azure SQL:** If the prompt mentions Azure SQL, because students may not have access to the paid service of Azure SQL, replace Azure SQL with a similar relational database setup such as **PostgreSQL + Docker** (the default setup described below).
+
 ## Execution Steps
 
 ### 1. Determine Folder Name
