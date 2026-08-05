@@ -1,0 +1,10 @@
+[project]
+name = "sqlite-rawsql-app"
+version = "0.1.0"
+description = "A simple FastAPI app using raw SQLite queries"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+]
