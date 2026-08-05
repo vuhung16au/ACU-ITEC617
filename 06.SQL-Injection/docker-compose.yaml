@@ -1,0 +1,69 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db-06-SQL-Injection
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sqli_demo
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - sqli-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-06-SQL-Injection
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - sqli-network
+    depends_on:
+      - db
+
+  # Tiny HTTP listener used to illustrate out-of-band exfiltration concepts.
+  # In a real OOB attack the database itself would contact an attacker-controlled host.
+  listener:
+    image: python:3.11-slim
+    container_name: listener-06-SQL-Injection
+    restart: always
+    working_dir: /listener
+    volumes:
+      - ./listener:/listener
+    command: ["python", "server.py"]
+    ports:
+      - "9999:9999"
+    networks:
+      - sqli-network
+
+  webapp:
+    build: .
+    container_name: webapp-06-SQL-Injection
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/sqli_demo
+      - OOB_LISTENER_URL=http://listener:9999
+    networks:
+      - sqli-network
+    depends_on:
+      - db
+      - listener
+
+networks:
+  sqli-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

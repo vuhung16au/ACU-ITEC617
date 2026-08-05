@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} · SQL Injection Demo{% endblock %}
+{% block content %}
+<section class="panel {% if mode == 'secure' %}safe{% else %}danger{% endif %}">
+  <p><a href="/">&larr; Back</a></p>
+  <h1>{{ title }}</h1>
+  <p class="badge {{ mode }}">{{ mode|upper }}</p>
+  <p class="{% if success %}ok{% else %}fail{% endif %}">{{ message }}</p>
+
+  {% if query %}
+  <h2>SQL executed</h2>
+  <pre class="query">{{ query }}</pre>
+  {% endif %}
+
+  {% if rows %}
+  <h2>Result rows</h2>
+  <table>
+    <thead>
+      <tr>
+        {% for key in rows[0].keys() %}
+        <th>{{ key }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        {% for value in row.values() %}
+        <td>{{ value }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if note %}
+  <p class="note">{{ note }}</p>
+  {% endif %}
+</section>
+{% endblock %}

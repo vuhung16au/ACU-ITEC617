@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}SQL Injection Demo{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">ACU ITEC617 · SQL Injection Lab</a>
+    <p class="tagline">Educational demo — intentionally vulnerable. Do not deploy publicly.</p>
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <p>Postgres + Python (raw SQL) · Compare vulnerable string concatenation with parameterised queries.</p>
+  </footer>
+</body>
+</html>

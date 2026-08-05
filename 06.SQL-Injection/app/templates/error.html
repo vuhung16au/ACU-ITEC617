@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Error · {{ title }}{% endblock %}
+{% block content %}
+<section class="panel danger">
+  <p><a href="/">&larr; Back</a></p>
+  <h1>{{ title }} — database error</h1>
+  <p class="note">
+    Error messages are shown deliberately so you can practise <strong>error-based</strong> in-band SQLi.
+    Real applications should never return raw database errors to clients.
+  </p>
+  {% if query %}
+  <h2>SQL attempted</h2>
+  <pre class="query">{{ query }}</pre>
+  {% endif %}
+  <h2>Error</h2>
+  <pre class="error">{{ error }}</pre>
+</section>
+{% endblock %}
