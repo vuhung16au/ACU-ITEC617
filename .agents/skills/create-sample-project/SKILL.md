@@ -47,7 +47,8 @@ You MUST adhere to the structural guidelines defined in `<root>/AGENTS.md` and k
 Create the following files and directories within the new project folder:
 
 *   **`docs/`**: Create this folder and populate it with 1-2 markdown files that briefly describe the key theoretical concepts covered in the example.
-*   **`README.md`**: An overview of the example folder, its purpose, and the learning outcomes.
+*   **`images/`**: Create this folder to contain screenshots and screencasts of the project. Include a file `images/README.md` in this folder stating its purpose.
+*   **`README.md`**: An overview of the example folder, its purpose, and the learning outcomes. Mention that screenshots and screencasts can be found in the `images` directory.
 *   **`QUICKSTART.md`**: Step-by-step instructions on how to run, connect to, and interact with the example. **Important:** Always include documentation on how to access and use the database Web UI.
 *   **`docker-compose.yaml`**: Must be used to define the environment. 
     *   **Web UI**: When spinning up a database, ALWAYS provide a Web UI service alongside it (e.g., `postgres` + `pgadmin`, `mongodb` + `mongo-express`).
