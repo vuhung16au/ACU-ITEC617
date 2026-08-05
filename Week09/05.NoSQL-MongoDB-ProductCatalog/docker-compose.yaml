@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb-W09-05-product-catalog
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - db-network
+
+  # Mongo Express provides a web-based GUI for MongoDB
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express-W09-05-product-catalog
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_BASICAUTH_USERNAME: 'admin'
+      ME_CONFIG_BASICAUTH_PASSWORD: 'password'
+    depends_on:
+      - mongodb
+    networks:
+      - db-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  db-network:
+    driver: bridge
