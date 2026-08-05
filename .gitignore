@@ -143,3 +143,10 @@ vite.config.ts.timestamp-*
 .vite/
 
 TODOs/
+
+# Python / SQLite ignores
+__pycache__/
+*.pyc
+*.sqlite
+venv/
+.venv/
