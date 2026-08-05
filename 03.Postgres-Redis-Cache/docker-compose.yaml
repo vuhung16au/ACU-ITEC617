@@ -1,0 +1,85 @@
+name: 03-postgres-redis-cache
+
+services:
+  # ---------------------------------------------------------
+  # PostgreSQL Database Service
+  # ---------------------------------------------------------
+  postgres-db-03-postgres-redis-cache:
+    image: postgres:15-alpine
+    container_name: postgres-db-03-postgres-redis-cache
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------
+  # pgAdmin Web UI for PostgreSQL
+  # ---------------------------------------------------------
+  pgadmin-03-postgres-redis-cache:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin-03-postgres-redis-cache
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres-db-03-postgres-redis-cache
+
+  # ---------------------------------------------------------
+  # Redis Cache Service
+  # ---------------------------------------------------------
+  redis-03-postgres-redis-cache:
+    image: redis:7-alpine
+    container_name: redis-03-postgres-redis-cache
+    restart: always
+    ports:
+      - "6379:6379"
+
+  # ---------------------------------------------------------
+  # RedisInsight Web UI for Redis
+  # ---------------------------------------------------------
+  redisinsight-03-postgres-redis-cache:
+    image: redis/redisinsight:latest
+    container_name: redisinsight-03-postgres-redis-cache
+    restart: always
+    ports:
+      - "8001:5540"
+    depends_on:
+      - redis-03-postgres-redis-cache
+
+  # ---------------------------------------------------------
+  # Next.js Web Application
+  # ---------------------------------------------------------
+  webapp-03-postgres-redis-cache:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    container_name: webapp-03-postgres-redis-cache
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres-db-03-postgres-redis-cache:5432/mydb?schema=public
+      - REDIS_URL=redis://redis-03-postgres-redis-cache:6379
+    depends_on:
+      postgres-db-03-postgres-redis-cache:
+        condition: service_healthy
+      redis-03-postgres-redis-cache:
+        condition: service_started
+
+volumes:
+  postgres_data:
