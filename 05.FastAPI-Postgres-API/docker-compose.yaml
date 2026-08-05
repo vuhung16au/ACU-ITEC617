@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres-db-05-FastAPI-API
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: student_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - api-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-05-FastAPI-API
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - api-network
+    depends_on:
+      - db
+
+  api:
+    build: .
+    container_name: api-05-FastAPI-API
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/student_db
+    networks:
+      - api-network
+    depends_on:
+      - db
+
+networks:
+  api-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
