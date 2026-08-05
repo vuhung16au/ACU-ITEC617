@@ -1,0 +1,33 @@
+services:
+  web-app:
+    build: 
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: web-app-02-Sqlite-Nextjs-RawSQL
+    ports:
+      - "3000:3000"
+    volumes:
+      - sqlite_data:/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+
+  db-ui:
+    image: coleifer/sqlite-web
+    container_name: db-ui-02-Sqlite-Nextjs-RawSQL
+    ports:
+      - "8080:8080"
+    volumes:
+      - sqlite_data:/data
+    networks:
+      - app-network
+    command: sqlite_web -H 0.0.0.0 -x /data/database.sqlite
+    depends_on:
+      - web-app
+
+volumes:
+  sqlite_data:
+
+networks:
+  app-network:
+    driver: bridge

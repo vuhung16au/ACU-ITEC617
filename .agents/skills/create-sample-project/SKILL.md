@@ -63,6 +63,8 @@ Create the following files and directories within the new project folder:
 
 ### 3. Application Code Guidelines
 
+*   **Content & Language**: Use Australian English (instead of American English) in all docs, comments, and application copy.
+*   **Test Data**: When generating synthetic mock data, use names like "Nguyen" or "Vu" if possible, and prefer Australia-related test data (e.g., Australian cities, states, addresses).
 *   **Engaging & Educational**: Structure the code so that it clearly illustrates the learning outcome (e.g., separating the database connection logic from the routing logic).
 *   **Keep It Simple**: Avoid overly complex frameworks or design patterns unless they are the focus of the objective. For instance, if demonstrating RAW SQL, don't use an ORM.
 
