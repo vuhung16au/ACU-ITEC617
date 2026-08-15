@@ -152,3 +152,7 @@ venv/
 .venv/
 
 .codacy/
+
+# Playwright
+playwright-report/
+test-results/
