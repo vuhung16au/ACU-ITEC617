@@ -1,0 +1,19 @@
+[project]
+name = "09-postgres-pgvector-rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi>=0.141.1",
+    "httpx>=0.28.1",
+    "jinja2>=3.1.6",
+    "pgvector>=0.5.0",
+    "psycopg2-binary>=2.9.12",
+    "pytest>=9.1.1",
+    "python-multipart>=0.0.32",
+    "sentence-transformers>=5.7.0",
+    "sqlalchemy>=2.0.52",
+    "transformers>=5.15.0",
+    "uvicorn>=0.52.3",
+]
