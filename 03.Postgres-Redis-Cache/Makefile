@@ -1,4 +1,10 @@
-.PHONY: up down build test test-e2e logs
+.PHONY: up down build test test-e2e logs clean
+
+clean:
+	@echo "Cleaning up generated files and caches..."
+	rm -rf node_modules .next .venv
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	rm -rf .pytest_cache
 
 # Bring up all containers in the background
 up:
